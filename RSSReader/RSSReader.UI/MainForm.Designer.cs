@@ -75,6 +75,7 @@
             this.buttonDownload.TabIndex = 2;
             this.buttonDownload.Text = "Загрузить";
             this.buttonDownload.UseVisualStyleBackColor = false;
+            this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
             // splitContainer
             // 
@@ -144,7 +145,7 @@
             this.labelTime.TabIndex = 5;
             this.labelTime.Visible = false;
             // 
-            // FormMain
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -157,7 +158,7 @@
             this.Controls.Add(this.labelURL);
             this.Controls.Add(this.textBoxURL);
             this.MinimumSize = new System.Drawing.Size(880, 533);
-            this.Name = "FormMain";
+            this.Name = "MainForm";
             this.Text = "RssReader";
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
