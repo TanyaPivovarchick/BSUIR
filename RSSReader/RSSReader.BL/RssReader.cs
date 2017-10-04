@@ -1,7 +1,12 @@
-﻿using System;
+﻿using RSSReader.BL.ServiceReference1;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Json;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -14,119 +19,54 @@ namespace RSSReader.BL
 
         public RssChannel channel;
 
+        Service1Client client;
+
         private List<RssArticle> articlesList;
 
         public RssReader()
         {
             Url = "";
+
+            // Create an endpoint.
+            Binding binding = new BasicHttpBinding();
+            EndpointAddress endpoint = new EndpointAddress("http://localhost:41166/Service1.svc");
+
+            // Create a client.
+            client = new Service1Client(binding, endpoint);
         }
 
         public List<RssArticle> GetArticles()
         {
             articlesList = new List<RssArticle>();
-            LoadData();
+
+            // filename[0] - name of the file containing information about the channel.
+            // filename[1] - name of the file containing articles.
+            String[] filenames = client.GetFilenames(Url);
+
+            DeserializeChannelInfo(filenames[0]);
+            DeserializeArticlesList(filenames[1]);
+
             return articlesList;
         }
 
-        private void LoadData()
+        private void DeserializeChannelInfo(string filename)
         {
-            WebRequest webRequest = WebRequest.Create(Url);
-            webRequest.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(RssChannel));
 
-            // Class XmlTextReader provides direct access to Xml data streams (only for reading).
-            XmlTextReader xmlReader = new XmlTextReader(webRequest.GetResponse().GetResponseStream());
-
-            XmlDocument doc = new XmlDocument();
-            doc.Load(xmlReader);
-
-            ParseXmlDoc(doc);
-        }
-
-        private void ParseXmlDoc(XmlDocument doc)
-        {
-            // XmlNode root contains the root Xml element for the loaded document.
-            XmlNode root = doc.DocumentElement;
-
-            // Obtaining a node containing a channel.
-            XmlNode currentChannel;
-            currentChannel = root.FirstChild;
-
-            GetChannelInfo(currentChannel);
-        }
-
-        private void GetChannelInfo(XmlNode currentChannel)
-        {
-            channel = new RssChannel();
-
-            // Cycle is used to pass through all the channel elements.
-            foreach (XmlNode element in currentChannel)
+            using (FileStream fs = new FileStream(filename, FileMode.Open))
             {
-                switch (element.Name)
-                {
-                    case "title":
-                        {
-                            // Rss feed name.
-                            channel.Title = element.InnerText;
-                            break;
-                        }
-                    case "description":
-                        {
-                            // Rss feed description.
-                            channel.Description = element.InnerText;
-                            break;
-                        }
-                    case "link":
-                        {
-                            // Rss feed link.
-                            channel.Link = element.InnerText;
-                            break;
-                        }
-                    case "item":
-                        {
-                            XmlNodeList itemInfo = element.ChildNodes;
-                            GetArticleInfo(itemInfo);
-                            break;
-                        }
-                }
+                channel = (RssChannel)jsonFormatter.ReadObject(fs);
             }
         }
 
-        private void GetArticleInfo(XmlNodeList itemInfo)
+        private void DeserializeArticlesList(string filename)
         {
-            RssArticle article = new RssArticle();
+            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<RssArticle>));
 
-            // Processing an channel item.
-            foreach (XmlNode element in itemInfo)
+            using (FileStream fs = new FileStream(filename, FileMode.Open))
             {
-                switch (element.Name)
-                {
-                    case "title":
-                        {
-                            // Article name.
-                            article.Title = element.InnerText;
-                            break;
-                        }
-                    case "description":
-                        {
-                            // Article description (HTML code).
-                            article.Description = element.InnerText;
-                            break;
-                        }
-                    case "link":
-                        {
-                            // Article link.
-                            article.Link = element.InnerText;
-                            break;
-                        }
-                    case "pubDate":
-                        {
-                            // Date of publication of the article.
-                            article.PubDate = element.InnerText;
-                            break;
-                        }
-                }
+                articlesList = (List<RssArticle>)jsonFormatter.ReadObject(fs);
             }
-            articlesList.Add(article);
         }
     }
 }

@@ -142,5 +142,31 @@ namespace RSSReader.UI
                 }
             }
         }
+
+        private void buttonMain_Click(object sender, EventArgs e)
+        {
+            // Output main page.
+            GenerateHtml(articlesList);
+            webBrowser.Navigate(Environment.CurrentDirectory + "\\articles.html");
+
+            isMainPage = true;
+            buttonMain.Visible = false;
+        }
+
+        private void webBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            // Download main page.
+            if (e.Url.Scheme == "file")
+            {
+                isMainPage = true;
+                buttonMain.Visible = false;
+            }
+            // Following a link.
+            else
+            {
+                isMainPage = false;
+                buttonMain.Visible = true;
+            }
+        }
     }
 }

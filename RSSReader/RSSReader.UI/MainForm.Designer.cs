@@ -59,7 +59,7 @@
             this.labelURL.Font = new System.Drawing.Font("Tempus Sans ITC", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelURL.Location = new System.Drawing.Point(12, 9);
             this.labelURL.Name = "labelURL";
-            this.labelURL.Size = new System.Drawing.Size(202, 24);
+            this.labelURL.Size = new System.Drawing.Size(212, 24);
             this.labelURL.TabIndex = 1;
             this.labelURL.Text = "URL адрес RSS ленты:";
             // 
@@ -120,6 +120,7 @@
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.Size = new System.Drawing.Size(567, 382);
             this.webBrowser.TabIndex = 0;
+            this.webBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser_Navigated);
             // 
             // buttonMain
             // 
@@ -134,6 +135,7 @@
             this.buttonMain.Text = "На главную";
             this.buttonMain.UseVisualStyleBackColor = false;
             this.buttonMain.Visible = false;
+            this.buttonMain.Click += new System.EventHandler(this.buttonMain_Click);
             // 
             // labelTime
             // 
