@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,6 +19,10 @@ namespace RSSReader.UI
 
         private List<RssArticle> articlesList;
 
+        private Boolean isFirstTime = true, isMainPage = true;
+
+        private const int refreshRate = 5000;
+
         public MainForm()
         {
             InitializeComponent();
@@ -26,13 +31,62 @@ namespace RSSReader.UI
 
         private void buttonDownload_Click(object sender, EventArgs e)
         {
+            // Get RSS feed link.
             rssReader.Url = textBoxURL.Text;
-            articlesList = rssReader.GetArticles();
-            GenerateHtml();
-            webBrowser.Navigate(Environment.CurrentDirectory + "\\articles.html");
+
+            isFirstTime = true;
+            labelTime.Visible = true;
+
+            UpdateData();
         }
 
-        private void GenerateHtml()
+        private async void UpdateData()
+        {
+            try
+            {
+                while (true)
+                {
+                    Func<List<RssArticle>> UpdateArticles = () =>
+                    {
+                        if (!isFirstTime)
+                        {
+                            Thread.Sleep(refreshRate);
+                        }
+                        isFirstTime = false;
+                        return rssReader.GetArticles();
+                    };
+
+                    // Update articlesList.
+                    articlesList = await Task<List<RssArticle>>.Factory.StartNew(UpdateArticles);
+
+                    // Update listBox.
+                    listBox.Items.Clear();
+                    int countItems = 0;
+                    foreach (RssArticle article in articlesList)
+                    {
+                        // Insert article headers into listBox.
+                        countItems++;
+                        listBox.Items.Add(countItems + ". " + article.Title);
+                    }
+
+                    // Update webBrowser.
+                    if (isMainPage)
+                    {
+                        GenerateHtml(articlesList);
+                        webBrowser.Navigate(Environment.CurrentDirectory + "\\articles.html");
+                    }
+
+                    // Display last update time.
+                    labelTime.Text = "Последнее обновление: " + DateTime.Now.ToLongTimeString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void GenerateHtml(List<RssArticle> articlesList)
         {
             RssChannel channel = rssReader.channel;
 
@@ -62,9 +116,7 @@ namespace RSSReader.UI
 
                 foreach (RssArticle article in articlesList)
                 {
-                    // Insert article headers into listBox.
                     countItems++;
-                    listBox.Items.Add(countItems + ". " + article.Title);
 
                     // Output article header and date of publication of the article.
                     writer.WriteLine(@"<a href=""" + article.Link + @"""><b>" + countItems + ". " + article.Title + "</b></a>");
