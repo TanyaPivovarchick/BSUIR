@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -166,6 +167,25 @@ namespace RSSReader.UI
             {
                 isMainPage = false;
                 buttonMain.Visible = true;
+            }
+        }
+
+        private async void buttonEmail_Click(object sender, EventArgs e)
+        {
+            string emailAddress = textBoxEmail.Text;
+
+            // Verifies that a string is in valid email format.
+            if (Regex.IsMatch(emailAddress, 
+                @"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))" + 
+                @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$"))
+            {
+                EmailMessage emailMessage = new EmailMessage();
+                emailMessage.ToEmail = emailAddress;
+                await emailMessage.SendEmailAsync();
+            }
+            else
+            {
+                MessageBox.Show("Некорректный адрес электронной почты. Пожалуйста, проверьте введённый адрес.");
             }
         }
     }
