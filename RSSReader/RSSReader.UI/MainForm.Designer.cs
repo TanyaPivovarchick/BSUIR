@@ -61,7 +61,7 @@
             this.labelURL.Font = new System.Drawing.Font("Tempus Sans ITC", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelURL.Location = new System.Drawing.Point(12, 9);
             this.labelURL.Name = "labelURL";
-            this.labelURL.Size = new System.Drawing.Size(212, 24);
+            this.labelURL.Size = new System.Drawing.Size(202, 24);
             this.labelURL.TabIndex = 1;
             this.labelURL.Text = "URL адрес RSS ленты:";
             // 
@@ -141,6 +141,7 @@
             // 
             // labelTime
             // 
+            this.labelTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelTime.AutoSize = true;
             this.labelTime.Font = new System.Drawing.Font("Tempus Sans ITC", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelTime.Location = new System.Drawing.Point(12, 451);
@@ -151,8 +152,7 @@
             // 
             // textBoxEmail
             // 
-            this.textBoxEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxEmail.Font = new System.Drawing.Font("Tempus Sans ITC", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxEmail.Location = new System.Drawing.Point(16, 484);
             this.textBoxEmail.Name = "textBoxEmail";
@@ -162,7 +162,7 @@
             // 
             // buttonEmail
             // 
-            this.buttonEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonEmail.BackColor = System.Drawing.Color.Lavender;
             this.buttonEmail.Font = new System.Drawing.Font("Tempus Sans ITC", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonEmail.Location = new System.Drawing.Point(335, 484);
@@ -188,7 +188,7 @@
             this.Controls.Add(this.buttonDownload);
             this.Controls.Add(this.labelURL);
             this.Controls.Add(this.textBoxURL);
-            this.MinimumSize = new System.Drawing.Size(880, 533);
+            this.MinimumSize = new System.Drawing.Size(883, 567);
             this.Name = "MainForm";
             this.Text = "RssReader";
             this.splitContainer.Panel1.ResumeLayout(false);
